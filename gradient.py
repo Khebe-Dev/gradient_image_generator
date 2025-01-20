@@ -2,8 +2,14 @@ import sys
 import struct
 
 def parse_args():
+    """Parse the arguments of horizontal and vertical points and their RGB values
+
+    Returns:
+        integers: int values of x and y pairs and RGB values of each
+    """
+
     if len(sys.argv) != 5:
-        print("Usage: python gradient.py x1,y1=r1,g1,b1 x2,y2=r2,g2,b2 -o image.bmp")
+        print("Usage: python3 gradient.py 10,20=10,50,255 90,80=60,20,10 -o output.bmp")
         sys.exit(1)
 
     # Extract the points and image path
@@ -12,22 +18,37 @@ def parse_args():
     output_path = sys.argv[4]
 
     # Parse point 1: "x1,y1=r1,g1,b1"
-    point1_coords, point1_color = point1.split("=")
+    point1_coords, point1_colour = point1.split("=")
     x1, y1 = point1_coords.split(",")
-    r1, g1, b1 = point1_color.split(",")
+    r1, g1, b1 = point1_colour.split(",")
     
     # Parse point 2: "x2,y2=r2,g2,b2"
-    point2_coords, point2_color = point2.split("=")
+    point2_coords, point2_colour = point2.split("=")
     x2, y2 = point2_coords.split(",")
-    r2, g2, b2 = point2_color.split(",")
+    r2, g2, b2 = point2_colour.split(",")
 
-    # Convert all parsed values to integers
     x1, y1, r1, g1, b1 = int(x1), int(y1), int(r1), int(g1), int(b1)
     x2, y2, r2, g2, b2 = int(x2), int(y2), int(r2), int(g2), int(b2)
 
     return x1, y1, r1, g1, b1, x2, y2, r2, g2, b2, output_path
 
 def create_file(x1, y1, r1, g1, b1, x2, y2, r2, g2, b2, output_path):
+    """Create BMP file and save it
+
+    Args:
+        x1 (int): horizonal coordinate of point 1
+        y1 (int): vertical coordiante of point 1
+        r1 (int): Red value of colour 1
+        g1 (int): Blue value of colour 1
+        b1 (int): Green value of colour 1
+        x2 (int): horizonal coordinate of point 2
+        y2 (int): vertical coordiante of point 2
+        r2 (int): Red value of colour 2
+        g2 (int): Blue value of colour 2
+        b2 (int): Green value of colour 2
+        output_path (bmp file): BMP file with the image of the linear gradient
+    """
+
     image_width = 100
     image_height = 100
 
@@ -51,13 +72,13 @@ def create_file(x1, y1, r1, g1, b1, x2, y2, r2, g2, b2, output_path):
     image_size = 0
     horizontal_resolution = 0
     vertical_resolution = 0
-    colors_in_palette = 0
-    important_colors = 0
+    colours_in_palette = 0
+    important_colours = 0
     dib_header = struct.pack("<IIIHHIIIIII", header_size, image_width, image_height, planes, bits_per_pixel,
-                             compression, image_size, horizontal_resolution, vertical_resolution, colors_in_palette,
-                             important_colors)
+                             compression, image_size, horizontal_resolution, vertical_resolution, colours_in_palette,
+                             important_colours)
 
-    # Create pixel data for the gradient
+    # Pixel data for the gradient
     pixel_data = []
     for row in range(image_height):
         for col in range(image_width):
@@ -90,6 +111,9 @@ def create_file(x1, y1, r1, g1, b1, x2, y2, r2, g2, b2, output_path):
         f.write(bytearray(pixel_data))
 
 def main():
+    """Main function to call the other functions 
+    """
+    
     # Parse command-line arguments
     x1, y1, r1, g1, b1, x2, y2, r2, g2, b2, output_path = parse_args()
 
